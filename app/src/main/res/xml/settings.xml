@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="Sortierung">>
+        <ListPreference
+            android:defaultValue="Stunde"
+            android:entries="@array/sort_name"
+            android:entryValues="@array/sort_values"
+            android:key="sorting"
+            android:summary="Legt fest wie der Plan geordnet werden Soll"
+            android:title="Sortieren" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Filter">
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="FILTERBOOL"
+            android:summary="Es wird nur noch eine oder mehrer von dir Festgelegte Klasse angezeigt. Achte auf Recht- und Groß/Kleinschreibung.
+            \nEs Muss durch ein Komma getrennt werden, wie z.b: 'BGY10,BGY11' oder einfach nur 'BGY10'"
+            android:title="Aktiviere Filtern nach Klasse" />
+        <EditTextPreference
+            android:autofillHints="test"
+            android:key="FILTERSTRING"
+            android:title="Klassen Namen eingeben"
+            android:hint="BGY10,BGY11"
+            app:dialogMessage="Klassen müssen durch ein Komma getrennt sein! wie z.b: 'BGY10,BGY11' oder einfach nur 'BGY10' ohne ''"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Nachtmodus">>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="nightmode"
+            android:summary="Aktiviert/Deaktiviert den Dunklen Modus"
+            android:title="Nachmodus" />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>
