@@ -4,6 +4,8 @@ package com.example.khsplan.settings;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.EditTextPreference;
@@ -14,12 +16,12 @@ import androidx.preference.SwitchPreferenceCompat;
 
 import com.example.khsplan.R;
 
-import java.util.Arrays;
-
 public class SettingsFragment extends PreferenceFragmentCompat {
     public int sortSettings;
     public String[] searchforklasse;
     public boolean searchKlasse;
+    public String meldung = "App muss neu gestartet werden";
+    public Toast toast = Toast.makeText(getContext(), meldung, Toast.LENGTH_LONG);
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -29,11 +31,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         filter_settings();
         filter_for_klasse();
     }
+
     private void load_sort_setting() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-        //int a = Integer.parseInt(sp.getString("sorting", "false"));
-        //System.out.println(a);
-        //scraper.sortSettings = a;
         ListPreference lp = (ListPreference) findPreference("sorting");
         assert lp != null;
        lp.setOnPreferenceChangeListener((preference, newValue) -> {
@@ -43,22 +43,27 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                    case "0":
                    case "Nicht Sortiert":
                        sortSettings = 0;
+                       toast.show();
                        break;
                    case "1":
                    case "Stunde":
                        sortSettings = 1;
+                       toast.show();
                        break;
                    case "2":
                    case "Stunde Umgekehrt":
                        sortSettings = 2;
+                       toast.show();
                        break;
                    case "3":
                    case "Klass Alphabetisch":
                        sortSettings = 3;
+                       toast.show();
                        break;
                    case "4":
                    case "Klasse Alphbetisch umgekehrt":
                        sortSettings = 4;
+                       toast.show();
                        break;
                    default:
                        sortSettings = 1;
@@ -81,6 +86,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 else{
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 }
+                toast.show();
                 return true;
             }
         });
@@ -91,7 +97,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert spc!=null;
         spc.setOnPreferenceChangeListener((preference, newValue) -> {
             searchKlasse = (boolean) newValue;
-            System.out.println(searchKlasse);
             return true;
         });
     }
@@ -108,6 +113,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 klasse.replace("'","");
             }
             searchforklasse = klasse.split(",");
+            toast.show();
             return true;
         });
     }
