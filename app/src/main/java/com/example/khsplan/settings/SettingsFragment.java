@@ -17,9 +17,9 @@ import com.example.khsplan.R;
 import java.util.Arrays;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
-    public static int sortSettings;
-    public static String[] searchforklasse;
-    public static boolean searchKlasse;
+    public int sortSettings;
+    public String[] searchforklasse;
+    public boolean searchKlasse;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -36,47 +36,35 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         //scraper.sortSettings = a;
         ListPreference lp = (ListPreference) findPreference("sorting");
         assert lp != null;
-       lp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-           @Override
-           public boolean onPreferenceChange(Preference preference, Object newValue) {
-               String items = (String)newValue;
-               if (preference.getKey().equals("sorting"))
-                   switch (items) {
-                       case "0":
-                           sortSettings = 0;
-                           break;
-                       case "Nicht Sortiert":
-                           sortSettings = 0;
-                           break;
-                       case "1":
-                           sortSettings = 1;
-                           break;
-                       case "Stunde":
-                           sortSettings = 1;
-                           break;
-                       case "2":
-                           sortSettings = 2;
-                           break;
-                       case "Stunde Umgekehrt":
-                           sortSettings = 2;
-                           break;
-                       case "3":
-                           sortSettings = 3;
-                           break;
-                       case "Klass Alphabetisch":
-                           sortSettings = 3;
-                           break;
-                       case "4":
-                           sortSettings = 4;
-                       case "Klasse Alphbetisch umgekehrt":
-                           sortSettings = 4;
-                           break;
-                       default:
-                           sortSettings = 1;
-                   }
-                System.out.println(items);
-               return true;
-           }
+       lp.setOnPreferenceChangeListener((preference, newValue) -> {
+           String items = (String)newValue;
+           if (preference.getKey().equals("sorting"))
+               switch (items) {
+                   case "0":
+                   case "Nicht Sortiert":
+                       sortSettings = 0;
+                       break;
+                   case "1":
+                   case "Stunde":
+                       sortSettings = 1;
+                       break;
+                   case "2":
+                   case "Stunde Umgekehrt":
+                       sortSettings = 2;
+                       break;
+                   case "3":
+                   case "Klass Alphabetisch":
+                       sortSettings = 3;
+                       break;
+                   case "4":
+                   case "Klasse Alphbetisch umgekehrt":
+                       sortSettings = 4;
+                       break;
+                   default:
+                       sortSettings = 1;
+               }
+            System.out.println(items);
+           return true;
        });
 
     }
@@ -101,32 +89,26 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private void filter_settings(){
         SwitchPreferenceCompat spc = (SwitchPreferenceCompat) findPreference("FILTERBOOL");
         assert spc!=null;
-        spc.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                searchKlasse = (boolean) newValue;
-                System.out.println(searchKlasse);
-                return true;
-            }
+        spc.setOnPreferenceChangeListener((preference, newValue) -> {
+            searchKlasse = (boolean) newValue;
+            System.out.println(searchKlasse);
+            return true;
         });
     }
 
     private void filter_for_klasse(){
         EditTextPreference etp = (EditTextPreference) findPreference("FILTERSTRING");
         assert etp!=null;
-        etp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                String klasse =(String) newValue;
-                if(klasse.equals("")){
-                    searchKlasse = false;
-                }
-                if(klasse.contains("'")){
-                    klasse.replace("'","");
-                }
-                searchforklasse = klasse.split(",");
-                return true;
+        etp.setOnPreferenceChangeListener((preference, newValue) -> {
+            String klasse =(String) newValue;
+            if(klasse.equals("")){
+                searchKlasse = false;
             }
+            if(klasse.contains("'")){
+                klasse.replace("'","");
+            }
+            searchforklasse = klasse.split(",");
+            return true;
         });
     }
 
@@ -140,5 +122,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         filter_for_klasse();
         super.onResume();
     }
+    /*
+    @Override
+    public void onStart() {
+        load_dark_setting();
+        load_sort_setting();
+        filter_settings();
+        filter_for_klasse();
+        super.onStart();
+    }
+     */
 
 }

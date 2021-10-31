@@ -2,18 +2,16 @@ package com.example.khsplan;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-
-import com.example.khsplan.settings.SettingsFragment;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
@@ -28,6 +26,9 @@ public class scraper extends AsyncTask<Void, Void, ArrayList<Tage>> {
     public final RecyclerView recyclerView;
     public final Context context;
     public static ProgressBar progressbar;
+    public int sorting;
+    public boolean filterbool;
+    public String[] filter;
 
 
     public scraper(String url1, ArrayList<Tage> tag, RecyclerView recyclerView, Context context, ProgressBar progressbar) {
@@ -35,6 +36,7 @@ public class scraper extends AsyncTask<Void, Void, ArrayList<Tage>> {
         this.recyclerView = recyclerView;
         this.context = context;
         scraper.progressbar = progressbar;
+
     }
 
     @Override
@@ -60,7 +62,7 @@ public class scraper extends AsyncTask<Void, Void, ArrayList<Tage>> {
                     int y = x + 1;
                     //Convert Stunde to ID to sort it
                     String idTempString = row.select("tr:nth-of-type(" + y + ") > td:nth-of-type(2)").text();
-                    int hour = 0;
+                    int hour;
                     if (idTempString.equals("")) {
                         continue;
                     } else {
@@ -79,17 +81,19 @@ public class scraper extends AsyncTask<Void, Void, ArrayList<Tage>> {
                             row.select("tr:nth-of-type(" + y + ") > td:nth-of-type(8)").text()));
                     //Filter
                     //sortSettings = Settings.load_setting();
-                    System.out.println(cach.size());
-                    if(SettingsFragment.searchKlasse) {
+                    load_filter_setting();
+                    if(filterbool) {
                         for (byte i = 0; i < cach.size(); i++) {
-                            if (!Arrays.asList(SettingsFragment.searchforklasse).contains(cach.get(i).getKlasse())) {
+                            if (!Arrays.asList(filter).contains(cach.get(i).getKlasse())) {
                                 cach.remove(i);
                             }
                         }
                     }
-
+                    System.out.println(sorting);
+                    load_sort_setting();
+                    System.out.println(sorting);
                     cach.sort((o1, o2) -> {
-                        switch (SettingsFragment.sortSettings) {
+                        switch (sorting) {
                             //Sortiere Stunde (Niedrig->Hoch)
                             case 1:
                                 return Integer.compare(o1.getID(), o2.getID());
@@ -117,8 +121,6 @@ public class scraper extends AsyncTask<Void, Void, ArrayList<Tage>> {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-        System.out.println(cach.size());
         return cach;
     }
 
@@ -165,25 +167,45 @@ public class scraper extends AsyncTask<Void, Void, ArrayList<Tage>> {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
     }
-
-    private void checkForKlasse(ArrayList<Tage> cach){
-        //String Array looks like this String[] test = {"A1","B39"};
-
-        String test = "VM20";
-        if(SettingsFragment.searchKlasse) {
-            for(byte i = 0; i<cach.size(); i++){
-                if(!Arrays.asList(SettingsFragment.searchforklasse).contains(cach.get(i).getKlasse())){
-                    cach.remove(i);
-                }
-                /*
-                if(!SettingsFragment.searchforklasse[0].equals(cach.get(i).getKlasse())
-                        &!SettingsFragment.searchforklasse[1].equals(cach.get(i).getKlasse())){
-                    cach.remove(i);
-                    return;
-                }
-
-                 */
-            }
+    private void load_sort_setting() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        String sortString = sp.getString("sorting","Nicht Sortieren");
+        switch (sortString) {
+            case "0":
+            case "Nicht Sortiert":
+                sorting = 0;
+                break;
+            case "1":
+            case "Stunde":
+                sorting = 1;
+                break;
+            case "2":
+            case "Stunde Umgekehrt":
+                sorting = 2;
+                break;
+            case "3":
+            case "Klass Alphabetisch":
+                sorting = 3;
+                break;
+            case "4":
+            case "Klasse Alphbetisch umgekehrt":
+                sorting = 4;
+                break;
+            default:
+                sorting = 1;
         }
+    }
+
+    private void load_filter_setting() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        filterbool = sp.getBoolean("FILTERBOOL", false);
+        String klassenFilter = sp.getString("FILTERSTRING", "");
+        if(klassenFilter.equals("")){
+            filterbool = false;
+        }
+        if(klassenFilter.contains("'")){
+            klassenFilter.replace("'","");
+        }
+        filter = klassenFilter.split(",");
     }
 }

@@ -1,10 +1,12 @@
 package com.example.khsplan.dayfragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.GestureDetector;
@@ -32,7 +34,6 @@ public class fragment1 extends Fragment {
     public static scraper scrap;
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,6 +47,4 @@ public class fragment1 extends Fragment {
         return view;
 
     }
-
-
 }

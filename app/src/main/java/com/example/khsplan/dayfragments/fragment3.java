@@ -1,8 +1,10 @@
 package com.example.khsplan.dayfragments;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -23,7 +25,6 @@ public class fragment3 extends Fragment {
     public ArrayList<Tage> drittertag = new ArrayList<>();
     Context context;
     public ProgressBar progressbar;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

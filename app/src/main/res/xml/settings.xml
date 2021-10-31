@@ -8,7 +8,8 @@
             android:entryValues="@array/sort_values"
             android:key="sorting"
             android:summary="Legt fest wie der Plan geordnet werden Soll"
-            android:title="Sortieren" />
+            android:title="Sortiere Nach"
+            app:useSimpleSummaryProvider="true"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="Filter">
         <SwitchPreferenceCompat

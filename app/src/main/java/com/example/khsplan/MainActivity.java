@@ -1,5 +1,6 @@
 /*
 TODO:
+Refresh/reload on Pref change
 Refresh on swipe
 
 Notifications
