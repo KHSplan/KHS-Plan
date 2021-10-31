@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
 
@@ -21,7 +20,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public String[] searchforklasse;
     public boolean searchKlasse;
     public String meldung = "App muss neu gestartet werden";
-    public Toast toast = Toast.makeText(getContext(), meldung, Toast.LENGTH_LONG);
+    public Toast toast;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -33,6 +32,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private void load_sort_setting() {
+        toast = Toast.makeText(getContext(), meldung, Toast.LENGTH_LONG);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
         ListPreference lp = (ListPreference) findPreference("sorting");
         assert lp != null;
@@ -74,34 +74,34 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     }
     private void load_dark_setting() {
+        toast = Toast.makeText(getContext(), meldung, Toast.LENGTH_LONG);
         CheckBoxPreference sp = (CheckBoxPreference) findPreference("nightmode");
         assert sp != null;
-        sp.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                boolean yes = (boolean) newValue;
-                if(yes){
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                }
-                else{
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                }
-                toast.show();
-                return true;
+        sp.setOnPreferenceChangeListener((preference, newValue) -> {
+            boolean yes = (boolean) newValue;
+            if (yes) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
+            toast.show();
+            return true;
         });
     }
 
     private void filter_settings(){
+        toast = Toast.makeText(getContext(), meldung, Toast.LENGTH_LONG);
         SwitchPreferenceCompat spc = (SwitchPreferenceCompat) findPreference("FILTERBOOL");
         assert spc!=null;
         spc.setOnPreferenceChangeListener((preference, newValue) -> {
             searchKlasse = (boolean) newValue;
+            toast.show();
             return true;
         });
     }
 
     private void filter_for_klasse(){
+        toast = Toast.makeText(getContext(), meldung, Toast.LENGTH_LONG);
         EditTextPreference etp = (EditTextPreference) findPreference("FILTERSTRING");
         assert etp!=null;
         etp.setOnPreferenceChangeListener((preference, newValue) -> {
