@@ -23,11 +23,11 @@ Lade dir die letzte version Herunter: [download] KHS-Plan Beta v.0.1.2
 
 ## Vertretungsplan
 
-![Vetretungsplan](https://github.com/KHSplan/KHS-Plan/blob/master/Preview/Screenshot_1641141637.png)
+![Vetretungsplan](https://github.com/KHSplan/KHS-Plan/blob/master/screenshots/Screenshot_1641141637.png)
 
 ## Einstellungen
 
-![Einstellungen](https://github.com/KHSplan/KHS-Plan/blob/master/Preview/Screenshot_1641141650.png)
+![Einstellungen](https://github.com/KHSplan/KHS-Plan/blob/master/screenshots/Screenshot_1641141650.png)
 
 ## License
 
