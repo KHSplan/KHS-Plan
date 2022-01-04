@@ -59,13 +59,13 @@ class SiteParser {
 
     //Filtering for Klasse
     if(Settings.getValue<bool>("keyfiltertoggle", false)){
-      String words = Settings.getValue<String>("keyfilterklasse", "");
+      String words = Settings.getValue<String>("keyfilterklasse", "").toUpperCase();
       if(words.isNotEmpty&&words!=""){
         if(words.contains(",")){
           List<String> filter = words.split(",");
           for(int x=0;x<tag.length; x++) {
             for (var element in filter) {
-              if(element==tag[x].klasse){
+              if(element==tag[x].klasse.toUpperCase()){
                 cach.add(tag[x]);
               }
             }
@@ -79,13 +79,13 @@ class SiteParser {
 
     //Filtering for Teacher
     if(Settings.getValue<bool>("keyfilterteachertoggle", false)){
-      String words = Settings.getValue<String>("keyfilterteacher", "");
+      String words = Settings.getValue<String>("keyfilterteacher", "").toUpperCase();
       if(words.isNotEmpty&&words!=""){
         if(words.contains(",")){
           List<String> filter = words.split(",");
           for(int x=0;x<tag.length; x++) {
             for(var e in filter) {
-              if(e.contains(tag[x].lehrer)){
+              if(e.contains(tag[x].lehrer.toUpperCase())){
                 cach.add(tag[x]);
               }
             }
@@ -98,19 +98,5 @@ class SiteParser {
     }
     return tag;
   }
-  /*
-  checknamerepl(String teacher) {
-    for(int n = 0; n<filter.length; n++) {
-      if(filter[n].contains("+")){
-        String? test = regexp.firstMatch(filter[n])!.group(0);
-        filter.removeAt(n);
-        filter.add(test!);
-        print(test);
-      }
-    }
-  }
-   */
-
-
 }
 

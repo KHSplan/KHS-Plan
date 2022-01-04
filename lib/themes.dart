@@ -23,34 +23,29 @@ class MyThemes {
       ),
       color: choosecardcolor(snap),
       elevation: 5,
-      //color: _chooseColor(snap.art.toString()),
       child:
-          //Leading stunden nummer implement + https://stackoverflow.com/questions/70147048/how-can-i-make-a-better-card-ui-spacing-in-flutter \t\t
-      //make text with
           Container(
             padding: const EdgeInsets.all(10),
             child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text(snap.stunde, style: const TextStyle(fontSize: 16),),
-                  Text(snap.klasse, style: const TextStyle(fontSize: 16),),
+                  Text(snap.stunde, style: const TextStyle(fontSize: 16), ),
+                  Text(snap.klasse, style: const TextStyle(fontSize: 16), ),
+                  Text(snap.lehrer, style: const TextStyle(fontSize: 16), ),
                   Text(snap.fach, style: const TextStyle(fontSize: 16),),
                 ],
               ),
-              Row(
+              Flex(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                direction: Axis.horizontal,
                 children: [
-                  Text("Raum: "+snap.raum, style: const TextStyle(fontSize: 16),),
-                  Text(snap.art, style: const TextStyle(fontSize: 16),),
-                  Text(snap.lehrer, style: const TextStyle(fontSize: 16),),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(snap.mitteilung, style: const TextStyle(fontSize: 16),),
+                  Text("Raum: "+snap.raum + "\t", style: const TextStyle(fontSize: 16),),
+                  Expanded(
+                    child: Text(snap.art + "\t" + snap.mitteilung, style: const TextStyle(fontSize: 16),),
+                  ),
+
                 ],
               ),
             ],
@@ -60,33 +55,52 @@ class MyThemes {
 
   choosecardcolor(Tage snap) {
     bool _isDarkmode = Settings.getValue<bool>("keydarkmode", true);
+    String type = snap.art.toUpperCase();
     if(_isDarkmode) {
       //When Darkmode is on
-      if (snap.art.toUpperCase().contains("ENTFÄLLT")) {
+      if (type.contains("ENTFÄLLT")) {
         return Colors.red;
       }
-      else if (snap.art.toUpperCase().contains("VERSCHOBEN")) {
+      else if (type.contains("VERSCHOBEN")) {
         return Colors.blue;
       }
-      else if (snap.art.toUpperCase().contains("RAUMÄNDERUNG")) {
+      else if (type.contains("RAUMÄNDERUNG")) {
+        return Colors.green;
+      }
+      else if (type.contains("ZUSATZUNTERRICHT")) {
         return Colors.cyan;
       }
-      else if (snap.art.toUpperCase().contains("ZUSATZUNTERRICHT")) {
-        return Colors.green;
+      else if (type.contains("AUFGABEN")) {
+        return Colors.deepPurple;
+      }
+      else if (type.contains("AUFGABEN")) {
+        return Colors.orange;
+      }
+      else {
+        return Colors.teal;
       }
     }
     else{
-      if (snap.art.toUpperCase().contains("ENTFÄLLT")) {
+      if (type.contains("ENTFÄLLT")) {
         return Colors.redAccent;
       }
-      else if (snap.art.toUpperCase().contains("VERSCHOBEN")) {
+      else if (type.contains("VERSCHOBEN")) {
         return Colors.lightBlueAccent;
       }
-      else if (snap.art.toUpperCase().contains("RAUMÄNDERUNG")) {
+      else if (type.contains("RAUMÄNDERUNG")) {
+        return Colors.greenAccent;
+      }
+      else if (type.contains("ZUSATZUNTERRICHT")) {
         return Colors.cyanAccent;
       }
-      else if (snap.art.toUpperCase().contains("ZUSATZUNTERRICHT")) {
-        return Colors.greenAccent;
+      else if (type.contains("AUFGABEN")) {
+        return Colors.deepPurpleAccent;
+      }
+      else if (type.contains("AUFGABEN")) {
+        return Colors.orangeAccent;
+      }
+      else {
+        return Colors.tealAccent;
       }
     }
 }
