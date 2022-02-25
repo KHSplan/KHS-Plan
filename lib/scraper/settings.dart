@@ -1,4 +1,4 @@
-//TODO: When multiple functions create a container for each function (e.g: V-plan, timetable...)
+//TODO: When multiple functions create a container for each function (e.g: V-plan, timetable.dart.dart...)
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

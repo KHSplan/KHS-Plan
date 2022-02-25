@@ -28,14 +28,14 @@ class SiteParser {
       }
 
       tag.add(Tage(stunde,
-          tabledata[x].querySelectorAll('td')[0].text.trim(),
-          tabledata[x].querySelectorAll('td')[1].text.trim(),
-          tabledata[x].querySelectorAll('td')[2].text.trim(),
-          tabledata[x].querySelectorAll('td')[3].text.trim(),
-          tabledata[x].querySelectorAll('td')[4].text.trim(),
-          tabledata[x].querySelectorAll('td')[5].text.trim(),
-          tabledata[x].querySelectorAll('td')[6].text.trim(),
-          tabledata[x].querySelectorAll('td')[7].text.trim(),
+          tabledata[x].querySelectorAll('td')[0].text.trim(), //Klasse
+          tabledata[x].querySelectorAll('td')[1].text.trim(), //Dstd.
+          tabledata[x].querySelectorAll('td')[2].text.trim(), //Zeit
+          tabledata[x].querySelectorAll('td')[3].text.trim(), //Fach/Kurs
+          tabledata[x].querySelectorAll('td')[4].text.trim(), //Lehrer
+          tabledata[x].querySelectorAll('td')[5].text.trim(), //Art
+          tabledata[x].querySelectorAll('td')[6].text.trim(), //Raum
+          tabledata[x].querySelectorAll('td')[7].text.trim(), //Mitteilung
           date));
     }
     //Sorting
