@@ -17,7 +17,7 @@
 
 # Download
 
-Lade dir die letzte version Herunter: [download] KHS-Plan Beta v.0.1.2
+Lade dir die letzte version Herunter: [download] KHS-Plan Beta v.0.1.3
 
 # Showcase
 
