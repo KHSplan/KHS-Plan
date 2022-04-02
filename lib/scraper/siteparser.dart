@@ -6,7 +6,6 @@ import 'package:khsplan/scraper/tage.dart';
 class SiteParser {
   List<Tage> getData(Document site) {
     List<Tage> tag = [];
-    List<Tage> cach = [];
     final String date = site.querySelector('h1.list-table-caption')!.text
         .toString();
     //gets Table
@@ -57,46 +56,63 @@ class SiteParser {
       }
     }
 
-    //Filtering for Klasse
-    if(Settings.getValue<bool>("keyfiltertoggle", false)){
+    //Filtering for Students Classes
+    String nachs = "NACHSCHREIBEN";
+    if(Settings.getValue<bool>("keyfiltertoggle", false)) {
       String words = Settings.getValue<String>("keyfilterklasse", "").toUpperCase();
       if(words.isNotEmpty&&words!=""){
-        if(words.contains(",")){
-          List<String> filter = words.split(",");
-          for(int x=0;x<tag.length; x++) {
-            for (var element in filter) {
-              if(element==tag[x].klasse.toUpperCase()){
-                cach.add(tag[x]);
-              }
-            }
-          }
-          return cach;
-        }else{
-            tag.removeWhere((element) => !element.klasse.contains(words));
+        words = '$words $nachs';
+        //tag.removeWhere((e) => !e.klasse.toUpperCase().contains(words));
+        tag.removeWhere((e) => !words.contains(e.klasse.toUpperCase()));
         }
       }
-    }
 
-    //Filtering for Teacher
+
+    //Filtering for Teachers
     if(Settings.getValue<bool>("keyfilterteachertoggle", false)){
       String words = Settings.getValue<String>("keyfilterteacher", "").toUpperCase();
+
       if(words.isNotEmpty&&words!=""){
-        if(words.contains(",")){
-          List<String> filter = words.split(",");
-          for(int x=0;x<tag.length; x++) {
-            for(var e in filter) {
-              if(e.contains(tag[x].lehrer.toUpperCase())){
-                cach.add(tag[x]);
-              }
-            }
-          }
-          return cach;
-        }else{
-          tag.removeWhere((element) => !element.lehrer.contains(words));
-        }
+        //tag.removeWhere((e) => !words.contains(checkspechar(e)));
+        tag.removeWhere((e) => checkspechar(e, words) == true);
       }
     }
     return tag;
   }
-}
 
+  //checks for special characters because the method "contains" cant check e.g "+TES (SET)" for "TES"
+  //It needs to be splitted and than compared
+  checkspechar(Tage e, String words) {
+    String regex = r'[^\p{Alphabetic}\p{Mark}\p{Decimal_Number}\p{Connector_Punctuation}\p{Join_Control}\s]+';
+    if(e.lehrer.contains(" ")){
+      String chach = e.lehrer;
+      List<String> chachlist = chach.replaceAll(RegExp(regex, unicode: true),'').split(" ");
+      for(var e in chachlist){
+        if(words.contains(e)){
+          return false;
+        }
+        else{
+          return true;
+        }
+      }
+    }
+    else if(e.lehrer.contains("(")){
+      String chach = e.lehrer;
+      chach = chach.replaceAll(RegExp(regex, unicode: true), "");
+      if(words.contains(chach)){
+        return false;
+      }
+      else{
+        return true;
+      }
+    }
+    else {
+      if (words.contains(e.lehrer)) {
+        return false;
+      }
+      else{
+        return true;
+      }
+    }
+  }
+}

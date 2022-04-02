@@ -15,6 +15,7 @@ import 'package:khsplan/scraper/settings.dart';
 import 'package:khsplan/themes.dart';
 import 'package:khsplan/timetable/timetable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 import 'login.dart';
@@ -96,11 +97,23 @@ class MyHomePageState extends State<MyHomePage>  {
   }
 
 
+
   Widget baseUI() {
     return Scaffold(
       appBar: AppBar(
           title: const Text("Vertretungsplan"),
           actions: <Widget>[
+            IconButton(
+              onPressed: () async {
+                const url = "https://www.karl-heine-schule-leipzig.de/Vertretung/";
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+              icon: const Icon(Icons.open_in_browser),
+            ),
             IconButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const MySettings()),
@@ -108,19 +121,24 @@ class MyHomePageState extends State<MyHomePage>  {
               },
               icon: const Icon(Icons.settings),
             ),
+
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () {
                 initState();
               },
             ),
+
           ]
       ),
       body: getSites(),
-
+      /*
+      drawer: Drawer(
+        child: drawerElements(),
+      ),
+       */
     );
   }
-
 
 
   //Get sites => Document, store them in a Document list
@@ -172,11 +190,7 @@ class MyHomePageState extends State<MyHomePage>  {
 
   Future<void> refresh() async {
     setState((){});
-    print("Do something!");
-  }
-  Future<void> setstaterefresh() async {
-    setState((){});
-    print("Do something!");
+    //print("Do something!!");
   }
 
   thememode() {
@@ -187,8 +201,3 @@ class MyHomePageState extends State<MyHomePage>  {
     }
   }
 }
-
-
-
-
-

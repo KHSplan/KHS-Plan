@@ -107,12 +107,10 @@ Widget build(BuildContext context) {
     return SwitchSettingsTile(
       title: "Filtern nach ",
       subtitle: 'Aktiviert/Deaktiviert Filtern.'
-          '\nBitte gebe die Klassen wie folgt ein:'
-          '\nEntweder: "BGy18" oder "BGy18,EGy18". Achte auf Groß und Kleinschreibung'
-          ' sowie dass du die Klassen mit einem Komma Trennst!',
+          '\nDie Klasse(n) einfach eingeben.'
+          '\nBei mehreren mit einem freizeichen (" ") trennen',
       settingKey: "keyfiltertoggle",
       childrenIfEnabled: [
-
         _filterklasse()
       ],
     );
@@ -128,10 +126,9 @@ Widget build(BuildContext context) {
       title: "Filtern nach Lehrer ",
       subtitle: 'Aktiviert/Deaktiviert Filtern.'
           '\nBitte den kürzel des Lehrer oder der Lehrerin ein:'
-          '\nEntweder: "NAM" oder "NAM,XYZ" ohne Klammern.',
+          '\nEntweder: "NAM" oder "NAM XYZ" ohne Klammern.',
       settingKey: "keyfilterteachertoggle",
       childrenIfEnabled: [
-
         _filterteacher()
       ],
     );
