@@ -36,4 +36,4 @@ MIT
 **Free Software, Hell Yeah!**
 
 
-[download]:<https://github.com/KHSplan/KHS-Plan/releases/tag/flutter-v0.1.4>
+[download]:<https://github.com/KHSplan/KHS-Plan/releases/download/v0.1.4/khsplan-v0.1.4.apk>
