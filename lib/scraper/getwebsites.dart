@@ -24,21 +24,21 @@ class GetWebsites {
       Document document = parser.parse(response);
       websites.add(document);
     }
-
     return websites;
   }
 
   Future<List<String>> getAvailableDays(String mainpageUrl) async {
     // besser wäre es natürlich, wenn URI Datentypen zurückgegeben werden würden
     List<String> availableDays = [];
+
     final getSite = await http.Client().get(Uri.parse(mainpageUrl));
     if (getSite.statusCode == 200) {
       Document site = parser.parse(getSite.body);
       final data = site.querySelectorAll(".month-group .day");
-      for (var element in data) {
-        String? dataUrl = element.attributes["onclick"]?.split("'")[1].split("'")[1];
+      data.forEach((element) {
+        String? dataUrl = element.attributes["onclick"]?.split("'")[1];
         availableDays.add(rootUrl + dataUrl!);
-      }
+      });
       if (kDebugMode) {
         print("Website URLS: ${availableDays.toString()}");
       }
