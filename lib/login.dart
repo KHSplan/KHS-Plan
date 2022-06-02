@@ -1,24 +1,24 @@
 import 'dart:convert';
-
 import 'package:crypto/crypto.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:khsplan/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 
 class Login extends StatefulWidget {
-  static const keystayloggedin = "keystayloggedin";
   const Login({Key? key}) : super(key: key);
 
 
   @override
   _LoginState createState() => _LoginState();
-  }
+}
 
 class _LoginState extends State<Login> {
   final _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("KHS-Plan"),
@@ -39,9 +39,9 @@ class _LoginState extends State<Login> {
             ),
           ),
           GFButton(
-              onPressed: () {_checklogin();},
-              text: "Check",
-              shape: GFButtonShape.pills,)
+            onPressed: () {_checklogin();},
+            text: "Check",
+            shape: GFButtonShape.pills,)
         ],
       ),
     );
@@ -53,8 +53,17 @@ class _LoginState extends State<Login> {
     var hashdinput = sha512.convert(utf8.encode(_controller.text));
     if(hashdinput.toString()==hashpw.toString()) {
       setloginbool();
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const MyHomePage()));
+      Navigator.push(context,
+          MaterialPageRoute(
+            builder: (context) => const MyHomePage(),
+          )
+      );
     }
   }
+  setloginbool() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("isLoggedIn", true);
+  }
+
 }
 

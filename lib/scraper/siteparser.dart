@@ -47,7 +47,7 @@ class SiteParser {
         case 2:
           tag.sort((a,b) => b.inthour.compareTo(a.inthour));
           break;
-          case 3:
+        case 3:
           tag.sort((a,b) => a.klasse.compareTo(b.klasse));
           break;
         case 4:
@@ -64,8 +64,8 @@ class SiteParser {
         words = '$words $nachs';
         //tag.removeWhere((e) => !e.klasse.toUpperCase().contains(words));
         tag.removeWhere((e) => !words.contains(e.klasse.toUpperCase()));
-        }
       }
+    }
 
 
     //Filtering for Teachers

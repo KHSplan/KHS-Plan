@@ -1,9 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:khsplan/main.dart';
 import 'package:khsplan/scraper/settings.dart';
 
 class Timetable extends StatefulWidget{
+  const Timetable({Key? key}) : super(key: key);
+
   @override
   _TimeTableState createState() => _TimeTableState();
 }
@@ -12,6 +13,7 @@ class _TimeTableState extends State<Timetable> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+      length: 5,
       child: Scaffold(
         appBar: AppBar(
             actions: <Widget> [
@@ -38,7 +40,6 @@ class _TimeTableState extends State<Timetable> {
         drawer: drawerElements(),
         body: const Text("Hi"),
       ),
-      length: 5,
     );
   }
 
@@ -55,7 +56,7 @@ class _TimeTableState extends State<Timetable> {
           title: const Text("Stundenplan"),
           onTap: () {
             Navigator.push(context,
-              MaterialPageRoute(builder: (context) => Timetable()),
+              MaterialPageRoute(builder: (context) => const Timetable()),
             );
           }
       ),

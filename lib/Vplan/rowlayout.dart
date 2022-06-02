@@ -8,7 +8,7 @@ import '../themes.dart';
 class RowLayout {
   Widget createRowLayout(AsyncSnapshot<List<html.Document>> snapshot, BuildContext context){
     return buildData(snapshot);
-}
+  }
 
   Widget buildData(AsyncSnapshot<List<html.Document>> snapshot) {
     List<List<Tage>> days = [];
@@ -26,15 +26,15 @@ class RowLayout {
      */
     return GroupListView(
       itemBuilder: (context, index) {
-        return MyThemes().buildCard(days[index.section][index.index]);
+        return MyThemes().buildCard(days[index.section][index.index], context);
       },
       sectionsCount: days.length ,
       groupHeaderBuilder: (BuildContext context, int section) {
         return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-        child: Text(
-            days[section].first.datum,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)));
+            child: Text(
+                days[section].first.datum,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)));
       },
       physics: const BouncingScrollPhysics(),
       countOfItemInSection: (int section) {

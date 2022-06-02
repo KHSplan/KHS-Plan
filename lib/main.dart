@@ -2,9 +2,7 @@
 TODO:
 - Settings: about
  */
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:html/dom.dart' as html;
@@ -13,11 +11,9 @@ import 'package:khsplan/scraper/getwebsites.dart';
 import 'package:khsplan/Vplan/tabbedlayout.dart';
 import 'package:khsplan/scraper/settings.dart';
 import 'package:khsplan/themes.dart';
-import 'package:khsplan/timetable/timetable.dart';
+//import 'package:khsplan/timetable/timetable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-
+import 'package:url_launcher/url_launcher_string.dart';
 import 'login.dart';
 
 void main() async {
@@ -25,48 +21,43 @@ void main() async {
       cacheProvider: SharePreferenceCache()
     //cacheProvider: _isUsingHive ? HiveCache() : SharePreferenceCache(),
   );
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-
-setloginbool() async{
+Future<bool> isLoggedIn() async{
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setBool("savelogin", true);
+  bool savelogin = prefs.getBool("isLoggedIn") ?? false;
+  return savelogin;
 }
-
-
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+
+  final bool _stayloggedin = Settings.getValue<bool>("keystayloggedin", true);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'KHS Plan',
-      themeMode: MyHomePageState().thememode(),
+      themeMode: ThemeMode.system,
       theme: MyThemes.lightTheme,
       darkTheme: MyThemes.darkTheme,
       home: FutureBuilder<bool>(
-        future: checkbool(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data!) {
-              return const MyHomePage();
-            }else {
-              return const Login();
+          future: isLoggedIn(),
+          builder: (context, defLoginBool) {
+            if (defLoginBool.hasData) {
+              if (_stayloggedin&&defLoginBool.data!){
+                return const MyHomePage();
+              }
+              else {
+                return const Login();
+              }
             }
+            return const Login();
           }
-          return const MyHomePage();
-        }
       ),
     );
   }
 
-  Future<bool> checkbool() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool savelogin = prefs.getBool("savelogin") ?? false;
-    return savelogin;
-  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -89,7 +80,7 @@ class MyHomePageState extends State<MyHomePage>  {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      themeMode: thememode(),
+      themeMode: ThemeMode.system,
       theme: MyThemes.lightTheme,
       darkTheme: MyThemes.darkTheme,
       home: baseUI(),//getSites(),
@@ -105,11 +96,11 @@ class MyHomePageState extends State<MyHomePage>  {
           actions: <Widget>[
             IconButton(
               onPressed: () async {
-                final Uri _url = Uri.parse("https://www.karl-heine-schule-leipzig.de/Vertretung/");
-                if (await canLaunchUrl(_url)) {
-                  await launchUrl(_url);
+                const url = "https://www.karl-heine-schule-leipzig.de/Vertretung/";
+                if (await canLaunchUrlString(url)) {
+                  await launchUrlString(url);
                 } else {
-                  throw 'Could not launch $_url';
+                  throw 'Could not launch $url';
                 }
               },
               icon: const Icon(Icons.open_in_browser),
@@ -161,8 +152,12 @@ class MyHomePageState extends State<MyHomePage>  {
             );
           case ConnectionState.done:
             if (snapshot.hasError) {
-              print("Fehler:${snapshot.error}");
-              return Text("Fehler:${snapshot.error}");
+              if (kDebugMode) {
+                print("Fehler:${snapshot.error}");
+              }
+              return Center(
+                child: Text("Fehler: ${snapshot.error}"),
+              );
             }
             //create tabs
             return buildrefresh(snapshot);
@@ -175,11 +170,11 @@ class MyHomePageState extends State<MyHomePage>  {
       onRefresh: () {
         return refresh();
       },
-      child: rowortabbedLayout(snapshot),
+      child: rowOrTabbedLayout(snapshot),
     );
   }
 
-  Widget rowortabbedLayout(AsyncSnapshot<List<html.Document>> snapshot) {
+  Widget rowOrTabbedLayout(AsyncSnapshot<List<html.Document>> snapshot) {
     if(Settings.getValue<bool>("keyrowortabbed", true)){
       return TabbedLayout().createTabbedLayout(snapshot, context);
     }else{
@@ -191,12 +186,14 @@ class MyHomePageState extends State<MyHomePage>  {
     setState((){});
     //print("Do something!!");
   }
-
+/*
   thememode() {
+    print("IM DOING IT WRONG");
     if(Settings.getValue<bool>("keydarkmode", true)){
       return ThemeMode.dark;
-    }else{
-      return ThemeMode.light;
     }
+    return ThemeMode.light;
   }
+
+ */
 }

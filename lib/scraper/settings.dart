@@ -1,6 +1,5 @@
 //TODO: When multiple functions create a container for each function (e.g: V-plan, timetable.dart.dart...)
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 
@@ -15,6 +14,7 @@ class MySettings extends StatefulWidget{
   static const keyfilterklasse = "keyfilterklasse";
   static const keyfilterteachertoggle = "keyfilterteachertoggle";
   static const keyfilterteacher = "keyfilterteacher";
+  static const keystayloggedin = "keystayloggedin";
 
 
   const MySettings({Key? key}) : super(key: key);
@@ -27,12 +27,13 @@ class MySettings extends StatefulWidget{
 class _MySettingsState extends State<MySettings>{
 
   @override
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
+    Theme.of(context);
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Einstellungen"),
-        ),
-        //body: _einstellungen(),
+      appBar: AppBar(
+        title: const Text("Einstellungen"),
+      ),
+      //body: _einstellungen(),
       body: ListView(
         padding: const EdgeInsets.all(10),
         children: [
@@ -40,6 +41,7 @@ Widget build(BuildContext context) {
           _sortSetting(),
           _filtertoggle(),
           _filterteachertoggle(),
+          _stayloggedin(),
         ],
       ),
     );
@@ -71,9 +73,12 @@ Widget build(BuildContext context) {
       title: "Dunkler Modus",
       subtitle: "Aktiviert/Deaktiviert Dunklen Modus",
       settingKey: "keydarkmode",
-      onChange: (keydarkmode){
+      /*onChange: (keydarkmode){
           MyHomePageState().thememode();
       },
+
+       */
+      //defaultValue: getThemeMode(),
     );
   }
 
@@ -81,25 +86,25 @@ Widget build(BuildContext context) {
 
   Widget _sortSetting(){
     return SettingsGroup(
-        title: "Sortieren und Filtern",
-        children: [
-          SwitchSettingsTile(
-              title: "Sortieren Aktivieren",
-              settingKey: "keysorttoggle",
-            childrenIfEnabled: [
-              DropDownSettingsTile(
-                  title: "Sortiere Nach",
-                  settingKey: "keysortfor",
-                  selected: 1,
-                  values: const <int, String>{
-                    1: "Stunde",
-                    2: "Stunde umgekehrt",
-                    3: "Alphabetisch",
-                    4: "Alphabetisch umgekehrt",
-                  })
-            ],
-          )
-        ],
+      title: "Sortieren und Filtern",
+      children: [
+        SwitchSettingsTile(
+          title: "Sortieren Aktivieren",
+          settingKey: "keysorttoggle",
+          childrenIfEnabled: [
+            DropDownSettingsTile(
+                title: "Sortiere Nach",
+                settingKey: "keysortfor",
+                selected: 1,
+                values: const <int, String>{
+                  1: "Stunde",
+                  2: "Stunde umgekehrt",
+                  3: "Alphabetisch",
+                  4: "Alphabetisch umgekehrt",
+                })
+          ],
+        )
+      ],
     );
   }
 
@@ -138,6 +143,22 @@ Widget build(BuildContext context) {
     return TextInputSettingsTile(
         title: "Lehrer Filter",
         settingKey: "keyfilterteacher");
+  }
+
+  Widget _stayloggedin(){
+    return SwitchSettingsTile(
+        title: "Bleibe Eingeloggt",
+        defaultValue: true,
+        enabled: true,
+        subtitle: "Nach beenden der App Passwort nicht wieder eingeben",
+        settingKey: "keystayloggedin");
+  }
+
+  getThemeMode() {
+    if(ThemeMode.system == ThemeMode.dark){
+      return true;
+    }
+    return false;
   }
 
 

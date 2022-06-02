@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:html/dom.dart' as html;
 import 'package:khsplan/scraper/siteparser.dart';
 import 'package:khsplan/scraper/tage.dart';
@@ -14,12 +12,12 @@ class TabbedLayout{
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0,
-            bottom: TabBar(
-              isScrollable: true,
-              tabs:
-              //Tab names
-              tabBarMaker(snapshot),
-            ),
+          bottom: TabBar(
+            isScrollable: true,
+            tabs:
+            //Tab names
+            tabBarMaker(snapshot),
+          ),
         ),
         body:
         TabBarView(
@@ -61,7 +59,7 @@ class TabbedLayout{
       physics: const BouncingScrollPhysics(),
       itemBuilder: (context, index) {
         //Build cards for each content
-        return MyThemes().buildCard(days[index]);
+        return MyThemes().buildCard(days[index], context);
       },
     );
   }
