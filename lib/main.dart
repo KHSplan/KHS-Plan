@@ -161,9 +161,8 @@ class MyHomePageState extends State<MyHomePage>  {
             );
           case ConnectionState.done:
             if (snapshot.hasError) {
-              return const Center(
-                child: Text('Fehler'),
-              );
+              print("Fehler:${snapshot.error}");
+              return Text("Fehler:${snapshot.error}");
             }
             //create tabs
             return buildrefresh(snapshot);
