@@ -17,13 +17,7 @@ class RowLayout {
       days.add(SiteParser().getData(snapshot.data![x]));
     }
     days.removeWhere((element) => element.isEmpty||element==[]);
-    /*
-    List<tage> testlist = [];
-    testlist.add(tage(1, "Class", "1.", "10:00", "Text", "Text", "Text", "Text", "", "Text"));
-    days.removeRange(0, days.length);
-    days.add(testlist);
 
-     */
     return GroupListView(
       itemBuilder: (context, index) {
         return MyThemes().buildCard(days[index.section][index.index], context);

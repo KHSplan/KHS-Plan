@@ -81,7 +81,7 @@ class SiteParser {
   }
 
   //checks for special characters because the method "contains" cant check e.g "+TES (SET)" for "TES"
-  //It needs to be splitted and than compared
+  //It needs to be splitted and than compared.
   checkspechar(Tage e, String words) {
     String regex = r'[^\p{Alphabetic}\p{Mark}\p{Decimal_Number}\p{Connector_Punctuation}\p{Join_Control}\s]+';
     if(e.lehrer.contains(" ")){

@@ -33,7 +33,6 @@ class _MySettingsState extends State<MySettings>{
       appBar: AppBar(
         title: const Text("Einstellungen"),
       ),
-      //body: _einstellungen(),
       body: ListView(
         padding: const EdgeInsets.all(10),
         children: [

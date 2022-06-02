@@ -16,7 +16,7 @@ class MyThemes {
   );
 
   //Set looks of a card with each content
-  //TODO: Fix length/make cards bigger
+  //TODO: Fix length/make cards bigger, more beautiful
   Widget buildCard(Tage snap, BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(

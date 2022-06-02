@@ -38,7 +38,7 @@ class _TimeTableState extends State<Timetable> {
             title: const Text("Stundenplan")
         ),
         drawer: drawerElements(),
-        body: const Text("Hi"),
+        body: const Text("Hii"),
       ),
     );
   }

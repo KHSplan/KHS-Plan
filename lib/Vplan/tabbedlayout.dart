@@ -21,9 +21,9 @@ class TabbedLayout{
         ),
         body:
         TabBarView(
+          physics: const BouncingScrollPhysics(),
           children:
           tabMaker(snapshot),
-          physics: const BouncingScrollPhysics(),
         ),
       ),
     );
