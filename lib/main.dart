@@ -156,7 +156,7 @@ class MyHomePageState extends State<MyHomePage>  {
                 print("Fehler:${snapshot.error}");
               }
               return Center(
-                child: Text("Fehler: ${snapshot.error}"),
+                child: Text("Fehler beim Darstellen: ${snapshot.error}"),
               );
             }
             //create tabs
