@@ -1,11 +1,12 @@
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:html/dom.dart';
-import 'package:khsplan/scraper/tage.dart';
+import 'package:khsplan/scraper/change.dart';
 
 
 class SiteParser {
-  List<Tage> getData(Document site) {
-    List<Tage> tag = [];
+
+  List<Change> getData(Document site) {
+    List<Change> changes = [];
     final String date = site.querySelector('h1.list-table-caption')!.text
         .toString();
     //gets Table
@@ -26,10 +27,11 @@ class SiteParser {
         }
       }
 
-      tag.add(Tage(stunde,
+      // TODO: make it a real parser => make it more flexible
+      changes.add(Change(stunde,
           tabledata[x].querySelectorAll('td')[0].text.trim(), //Klasse
-          tabledata[x].querySelectorAll('td')[1].text.trim(), //Dstd.
-          tabledata[x].querySelectorAll('td')[2].text.trim(), //Zeit
+          tabledata[x].querySelectorAll('td')[1].text.trim(), //Lesson of Day
+          tabledata[x].querySelectorAll('td')[2].text.trim(), //Time of Day
           tabledata[x].querySelectorAll('td')[3].text.trim(), //Fach/Kurs
           tabledata[x].querySelectorAll('td')[4].text.trim(), //Lehrer
           tabledata[x].querySelectorAll('td')[5].text.trim(), //Art
@@ -41,17 +43,17 @@ class SiteParser {
     if(Settings.getValue<bool>("keysorttoggle", false)){
       switch(Settings.getValue("keysortfor", 1)){
         case 1:
-          tag.sort((a,b) => a.inthour.compareTo(b.inthour));
+          changes.sort((a,b) => a.inthour.compareTo(b.inthour));
 
           break;
         case 2:
-          tag.sort((a,b) => b.inthour.compareTo(a.inthour));
+          changes.sort((a,b) => b.inthour.compareTo(a.inthour));
           break;
         case 3:
-          tag.sort((a,b) => a.klasse.compareTo(b.klasse));
+          changes.sort((a,b) => a.classIdentifier.compareTo(b.classIdentifier));
           break;
         case 4:
-          tag.sort((a,b) => b.klasse.compareTo(a.klasse));
+          changes.sort((a,b) => b.classIdentifier.compareTo(a.classIdentifier));
           break;
       }
     }
@@ -62,8 +64,8 @@ class SiteParser {
       String words = Settings.getValue<String>("keyfilterklasse", "").toUpperCase();
       if(words.isNotEmpty&&words!=""){
         words = '$words $nachs';
-        //tag.removeWhere((e) => !e.klasse.toUpperCase().contains(words));
-        tag.removeWhere((e) => !words.contains(e.klasse.toUpperCase()));
+        //changes.removeWhere((e) => !e.klasse.toUpperCase().contains(words));
+        changes.removeWhere((e) => !words.contains(e.classIdentifier.toUpperCase()));
       }
     }
 
@@ -73,19 +75,19 @@ class SiteParser {
       String words = Settings.getValue<String>("keyfilterteacher", "").toUpperCase();
 
       if(words.isNotEmpty&&words!=""){
-        //tag.removeWhere((e) => !words.contains(checkspechar(e)));
-        tag.removeWhere((e) => checkspechar(e, words) == true);
+        //changes.removeWhere((e) => !words.contains(checkspechar(e)));
+        changes.removeWhere((e) => checkspechar(e, words) == true);
       }
     }
-    return tag;
+    return changes;
   }
 
   //checks for special characters because the method "contains" cant check e.g "+TES (SET)" for "TES"
   //It needs to be splitted and than compared.
-  checkspechar(Tage e, String words) {
+  checkspechar(Change e, String words) {
     String regex = r'[^\p{Alphabetic}\p{Mark}\p{Decimal_Number}\p{Connector_Punctuation}\p{Join_Control}\s]+';
-    if(e.lehrer.contains(" ")){
-      String chach = e.lehrer;
+    if(e.mentor.contains(" ")){
+      String chach = e.mentor;
       List<String> chachlist = chach.replaceAll(RegExp(regex, unicode: true),'').split(" ");
       for(var e in chachlist){
         if(words.contains(e)){
@@ -96,8 +98,8 @@ class SiteParser {
         }
       }
     }
-    else if(e.lehrer.contains("(")){
-      String chach = e.lehrer;
+    else if(e.mentor.contains("(")){
+      String chach = e.mentor;
       chach = chach.replaceAll(RegExp(regex, unicode: true), "");
       if(words.contains(chach)){
         return false;
@@ -107,7 +109,7 @@ class SiteParser {
       }
     }
     else {
-      if (words.contains(e.lehrer)) {
+      if (words.contains(e.mentor)) {
         return false;
       }
       else{
