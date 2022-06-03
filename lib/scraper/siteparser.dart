@@ -83,62 +83,24 @@ class SiteParser {
     }
 
     //Filtering for Students Classes
-    String nachs = "NACHSCHREIBEN";
     if(Settings.getValue<bool>("keyfiltertoggle", false)) {
-      String words = Settings.getValue<String>("keyfilterklasse", "").toUpperCase();
-      if(words.isNotEmpty&&words!=""){
-        words = '$words $nachs';
-        //changes.removeWhere((e) => !e.klasse.toUpperCase().contains(words));
-        changes.removeWhere((e) => !words.contains(e.classIdentifier.toUpperCase()));
+      String searchTerm =
+          Settings.getValue<String>("keyfilterklasse", "").toUpperCase();
+      if (searchTerm.isNotEmpty && searchTerm != "") {
+        changes.removeWhere(
+            (e) => !e.classIdentifier.toUpperCase().contains(searchTerm));
       }
     }
 
-
     //Filtering for Teachers
-    if(Settings.getValue<bool>("keyfilterteachertoggle", false)){
-      String words = Settings.getValue<String>("keyfilterteacher", "").toUpperCase();
-
-      if(words.isNotEmpty&&words!=""){
-        //changes.removeWhere((e) => !words.contains(checkspechar(e)));
-        changes.removeWhere((e) => checkspechar(e, words) == true);
+    if(Settings.getValue<bool>("keyfilterteachertoggle", false)) {
+      String searchTerm =
+          Settings.getValue<String>("keyfilterteacher", "").toUpperCase();
+      if (searchTerm.isNotEmpty && searchTerm != "") {
+        changes
+            .removeWhere((e) => !e.mentor.toUpperCase().contains(searchTerm));
       }
     }
     return changes;
-  }
-
-  //checks for special characters because the method "contains" cant check e.g "+TES (SET)" for "TES"
-  //It needs to be splitted and than compared.
-  checkspechar(Change e, String words) {
-    String regex = r'[^\p{Alphabetic}\p{Mark}\p{Decimal_Number}\p{Connector_Punctuation}\p{Join_Control}\s]+';
-    if(e.mentor.contains(" ")){
-      String chach = e.mentor;
-      List<String> chachlist = chach.replaceAll(RegExp(regex, unicode: true),'').split(" ");
-      for(var e in chachlist){
-        if(words.contains(e)){
-          return false;
-        }
-        else{
-          return true;
-        }
-      }
-    }
-    else if(e.mentor.contains("(")){
-      String chach = e.mentor;
-      chach = chach.replaceAll(RegExp(regex, unicode: true), "");
-      if(words.contains(chach)){
-        return false;
-      }
-      else{
-        return true;
-      }
-    }
-    else {
-      if (words.contains(e.mentor)) {
-        return false;
-      }
-      else{
-        return true;
-      }
-    }
   }
 }
