@@ -84,23 +84,50 @@ class SiteParser {
 
     //Filtering for Students Classes
     if(Settings.getValue<bool>("keyfiltertoggle", false)) {
-      String searchTerm =
-          Settings.getValue<String>("keyfilterklasse", "").toUpperCase();
-      if (searchTerm.isNotEmpty && searchTerm != "") {
-        changes.removeWhere(
-            (e) => !e.classIdentifier.toUpperCase().contains(searchTerm));
+      if (Settings.getValue<String>("keyfilterklasse", "")
+              .toUpperCase()
+              .isNotEmpty &&
+          Settings.getValue<String>("keyfilterklasse", "").toUpperCase() !=
+              "") {
+        List<String> searchTerms =
+            Settings.getValue<String>("keyfilterklasse", "")
+                .toUpperCase()
+                .split(" ");
+        changes =
+            getEntriesWith(changes, searchTerms, true); //FIXME: in new version
       }
     }
 
     //Filtering for Teachers
-    if(Settings.getValue<bool>("keyfilterteachertoggle", false)) {
-      String searchTerm =
-          Settings.getValue<String>("keyfilterteacher", "").toUpperCase();
-      if (searchTerm.isNotEmpty && searchTerm != "") {
-        changes
-            .removeWhere((e) => !e.mentor.toUpperCase().contains(searchTerm));
+    if (Settings.getValue<bool>("keyfilterteachertoggle", false)) {
+      if (Settings.getValue<String>("keyfilterteacher", "")
+              .toUpperCase()
+              .isNotEmpty &&
+          Settings.getValue<String>("keyfilterteacher", "").toUpperCase() !=
+              "") {
+        List<String> searchTerms =
+            Settings.getValue<String>("keyfilterteacher", "")
+                .toUpperCase()
+                .split(" ");
+        changes = getEntriesWith(changes, searchTerms, false);
       }
     }
     return changes;
+  }
+
+  List<Change> getEntriesWith(
+      List<Change> changes, List<String> searchTerms, bool isForClass) {
+    List<Change> re = [];
+    for (Change value in changes) {
+      for (String searchTerm in searchTerms) {
+        if (isForClass) {
+          if (value.classIdentifier.toUpperCase().contains(searchTerm))
+            re.add(value);
+        } else {
+          if (value.mentor.toUpperCase().contains(searchTerm)) re.add(value);
+        }
+      }
+    }
+    return re.toSet().toList();
   }
 }
