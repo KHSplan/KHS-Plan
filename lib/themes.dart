@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
-import 'package:khsplan/scraper/tage.dart';
+import 'package:khsplan/scraper/change.dart';
 
 class MyThemes {
   static final darkTheme = ThemeData(
@@ -17,7 +17,7 @@ class MyThemes {
 
   //Set looks of a card with each content
   //TODO: Fix length/make cards bigger, more beautiful
-  Widget buildCard(Tage snap, BuildContext context) {
+  Widget buildCard(Change snap, BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -32,19 +32,19 @@ class MyThemes {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(snap.stunde, style: const TextStyle(fontSize: 16), ),
-                Text(snap.klasse, style: const TextStyle(fontSize: 16), ),
-                Text(snap.lehrer, style: const TextStyle(fontSize: 16), ),
-                Text(snap.fach, style: const TextStyle(fontSize: 16),),
+                Text(snap.lessonNumber, style: const TextStyle(fontSize: 16), ),
+                Text(snap.classIdentifier, style: const TextStyle(fontSize: 16), ),
+                Text(snap.mentor, style: const TextStyle(fontSize: 16), ),
+                Text(snap.subject, style: const TextStyle(fontSize: 16),),
               ],
             ),
             Flex(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               direction: Axis.horizontal,
               children: [
-                Text("Raum: "+snap.raum + "\t", style: const TextStyle(fontSize: 16),),
+                Text("Raum: "+snap.room + "\t", style: const TextStyle(fontSize: 16),),
                 Expanded(
-                  child: Text(snap.art + "\t" + snap.mitteilung, style: const TextStyle(fontSize: 16),),
+                  child: Text(snap.change + "\t" + snap.message, style: const TextStyle(fontSize: 16),),
                 ),
 
               ],
@@ -54,8 +54,8 @@ class MyThemes {
     );
   }
 
-  choosecardcolor(Tage snap, BuildContext context) {
-    String type = snap.art.toUpperCase();
+  choosecardcolor(Change snap, BuildContext context) {
+    String type = snap.change.toUpperCase();
     if (kDebugMode) {
       print("Theme of context == dark: ${Theme.of(context).brightness==Brightness.dark}");
     }

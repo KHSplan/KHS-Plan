@@ -1,13 +1,14 @@
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:html/dom.dart';
-import 'package:khsplan/scraper/tage.dart';
+import 'package:khsplan/scraper/change.dart';
 
 
 class SiteParser {
-  List<Tage> getData(Document site) {
-    List<Tage> tag = [];
-    final String date = site.querySelector('h1.list-table-caption')!.text
-        .toString();
+
+  List<Change> getData(Document site) {
+    List<Change> changes = [];
+    final String date =
+        site.querySelector('h1.list-table-caption')!.text.toString();
     //gets Table
     final table = site.querySelector('table.list-table');
     //gets specifc data
@@ -15,104 +16,118 @@ class SiteParser {
 
     //Outprint -> Later parsing
 
-    int stunde = 0;
-    for(int x = 1; x<tabledata.length;x++) {
-      String cach = tabledata[x].querySelectorAll('td')[1].text.trim().toString();
-      String test;
-      if(cach.contains(".")){
-        test = cach.replaceAll(".","");
-        if(test.isNotEmpty&&test != ""){
-          stunde = int.parse(test);
+    int lessonNumberInt = 0;
+    for (var entry in tabledata) {
+      // the first row isn't like the others
+      if (entry.querySelectorAll('td').isNotEmpty) {
+        if (entry.querySelectorAll('td')[1].text.isNotEmpty &&
+            entry.querySelectorAll('td')[1].text.trim() != "") {
+          lessonNumberInt = int.parse(entry
+              .querySelectorAll('td')[1]
+              .text
+              .trim()
+              .toString()
+              .replaceAll(".", "")); // we have to get rid of this dot
         }
+
+        // TODO: make it a real parser => make it more flexible
+        // creates a object out of the change change class
+        changes.add(Change(
+            // lessonNumberInt
+            lessonNumberInt,
+            // classIdentifier
+            entry.querySelectorAll('td')[0].text.trim(),
+            // lessonNumber
+            entry.querySelectorAll('td')[1].text.trim(),
+            // timeOfDay
+            entry.querySelectorAll('td')[2].text.trim(),
+            // subject
+            entry.querySelectorAll('td')[3].text.trim(),
+            // room
+            entry.querySelectorAll('td')[4].text.trim(),
+            // (the) change (is also kind of a message)
+            entry.querySelectorAll('td')[5].text.trim(),
+            // mentor
+            entry.querySelectorAll('td')[6].text.trim(),
+            // message
+            entry.querySelectorAll('td')[7].text.trim(),
+            // date
+            date));
       }
 
-      tag.add(Tage(stunde,
-          tabledata[x].querySelectorAll('td')[0].text.trim(), //Klasse
-          tabledata[x].querySelectorAll('td')[1].text.trim(), //Dstd.
-          tabledata[x].querySelectorAll('td')[2].text.trim(), //Zeit
-          tabledata[x].querySelectorAll('td')[3].text.trim(), //Fach/Kurs
-          tabledata[x].querySelectorAll('td')[4].text.trim(), //Lehrer
-          tabledata[x].querySelectorAll('td')[5].text.trim(), //Art
-          tabledata[x].querySelectorAll('td')[6].text.trim(), //Raum
-          tabledata[x].querySelectorAll('td')[7].text.trim(), //Mitteilung
-          date));
-    }
-    //Sorting
-    if(Settings.getValue<bool>("keysorttoggle", false)){
-      switch(Settings.getValue("keysortfor", 1)){
-        case 1:
-          tag.sort((a,b) => a.inthour.compareTo(b.inthour));
-
-          break;
-        case 2:
-          tag.sort((a,b) => b.inthour.compareTo(a.inthour));
-          break;
-        case 3:
-          tag.sort((a,b) => a.klasse.compareTo(b.klasse));
-          break;
-        case 4:
-          tag.sort((a,b) => b.klasse.compareTo(a.klasse));
-          break;
+      // Sorting the results
+      if (Settings.getValue<bool>("keysorttoggle", false)) {
+        switch (Settings.getValue("keysortfor", 1)) {
+          case 1:
+            // sort classNumber
+            changes
+                .sort((a, b) => a.lessonNumberInt.compareTo(b.lessonNumberInt));
+            break;
+          case 2:
+            // sort classNumber in reverse order
+            changes
+                .sort((a, b) => b.lessonNumberInt.compareTo(a.lessonNumberInt));
+            break;
+          case 3:
+            // sort alphabetically
+            changes
+                .sort((a, b) => a.classIdentifier.compareTo(b.classIdentifier));
+            break;
+          case 4:
+            // sort alphabetically in reverse order
+            changes
+                .sort((a, b) => b.classIdentifier.compareTo(a.classIdentifier));
+            break;
+        }
       }
     }
 
     //Filtering for Students Classes
-    String nachs = "NACHSCHREIBEN";
     if(Settings.getValue<bool>("keyfiltertoggle", false)) {
-      String words = Settings.getValue<String>("keyfilterklasse", "").toUpperCase();
-      if(words.isNotEmpty&&words!=""){
-        words = '$words $nachs';
-        //tag.removeWhere((e) => !e.klasse.toUpperCase().contains(words));
-        tag.removeWhere((e) => !words.contains(e.klasse.toUpperCase()));
+      if (Settings.getValue<String>("keyfilterklasse", "")
+              .toUpperCase()
+              .isNotEmpty &&
+          Settings.getValue<String>("keyfilterklasse", "").toUpperCase() !=
+              "") {
+        List<String> searchTerms =
+            Settings.getValue<String>("keyfilterklasse", "")
+                .toUpperCase()
+                .split(" ");
+        changes =
+            getEntriesWith(changes, searchTerms, true); //FIXME: in new version
       }
     }
-
 
     //Filtering for Teachers
-    if(Settings.getValue<bool>("keyfilterteachertoggle", false)){
-      String words = Settings.getValue<String>("keyfilterteacher", "").toUpperCase();
-
-      if(words.isNotEmpty&&words!=""){
-        //tag.removeWhere((e) => !words.contains(checkspechar(e)));
-        tag.removeWhere((e) => checkspechar(e, words) == true);
+    if (Settings.getValue<bool>("keyfilterteachertoggle", false)) {
+      if (Settings.getValue<String>("keyfilterteacher", "")
+              .toUpperCase()
+              .isNotEmpty &&
+          Settings.getValue<String>("keyfilterteacher", "").toUpperCase() !=
+              "") {
+        List<String> searchTerms =
+            Settings.getValue<String>("keyfilterteacher", "")
+                .toUpperCase()
+                .split(" ");
+        changes = getEntriesWith(changes, searchTerms, false);
       }
     }
-    return tag;
+    return changes;
   }
 
-  //checks for special characters because the method "contains" cant check e.g "+TES (SET)" for "TES"
-  //It needs to be splitted and than compared.
-  checkspechar(Tage e, String words) {
-    String regex = r'[^\p{Alphabetic}\p{Mark}\p{Decimal_Number}\p{Connector_Punctuation}\p{Join_Control}\s]+';
-    if(e.lehrer.contains(" ")){
-      String chach = e.lehrer;
-      List<String> chachlist = chach.replaceAll(RegExp(regex, unicode: true),'').split(" ");
-      for(var e in chachlist){
-        if(words.contains(e)){
-          return false;
-        }
-        else{
-          return true;
+  List<Change> getEntriesWith(
+      List<Change> changes, List<String> searchTerms, bool isForClass) {
+    List<Change> re = [];
+    for (Change value in changes) {
+      for (String searchTerm in searchTerms) {
+        if (isForClass) {
+          if (value.classIdentifier.toUpperCase().contains(searchTerm))
+            re.add(value);
+        } else {
+          if (value.mentor.toUpperCase().contains(searchTerm)) re.add(value);
         }
       }
     }
-    else if(e.lehrer.contains("(")){
-      String chach = e.lehrer;
-      chach = chach.replaceAll(RegExp(regex, unicode: true), "");
-      if(words.contains(chach)){
-        return false;
-      }
-      else{
-        return true;
-      }
-    }
-    else {
-      if (words.contains(e.lehrer)) {
-        return false;
-      }
-      else{
-        return true;
-      }
-    }
+    return re.toSet().toList();
   }
 }

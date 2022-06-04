@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as html;
 import 'package:khsplan/scraper/siteparser.dart';
-import 'package:khsplan/scraper/tage.dart';
+import 'package:khsplan/scraper/change.dart';
 import 'package:khsplan/themes.dart';
 
 
@@ -51,7 +51,7 @@ class TabbedLayout{
 
   //Get Contents of a day
   Widget _buildDay(html.Document site) {
-    List<Tage> days = _getSiteData.getData(site);
+    List<Change> days = _getSiteData.getData(site);
     return ListView.builder(
       scrollDirection: Axis.vertical,
       padding: const EdgeInsets.all(10),
