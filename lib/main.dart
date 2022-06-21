@@ -5,34 +5,33 @@ TODO:
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
-import 'package:html/dom.dart' as html;
+import 'package:html/dom.dart' as dom;
 import 'package:khsplan/Vplan/rowlayout.dart';
+import 'package:khsplan/scraper/change.dart';
+import 'package:khsplan/scraper/getURLs.dart';
 import 'package:khsplan/scraper/getwebsites.dart';
 import 'package:khsplan/Vplan/tabbedlayout.dart';
-import 'package:khsplan/scraper/settings.dart';
+import 'package:khsplan/scraper/siteparser.dart';
+import 'package:khsplan/settings/oldsettings.dart';
+import 'package:khsplan/settings/settings.dart';
+//import 'package:khsplan/settings/settings.dart';
 import 'package:khsplan/themes.dart';
 //import 'package:khsplan/timetable/timetable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'login.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
-  await Settings.init(
-      cacheProvider: SharePreferenceCache()
-    //cacheProvider: _isUsingHive ? HiveCache() : SharePreferenceCache(),
-  );
+  await Hive.initFlutter();
+  await Hive.openBox('settings');
   runApp(MyApp());
-}
-
-Future<bool> isLoggedIn() async{
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool savelogin = prefs.getBool("isLoggedIn") ?? false;
-  return savelogin;
 }
 
 class MyApp extends StatelessWidget {
 
-  final bool _stayloggedin = Settings.getValue<bool>("keystayloggedin", true);
+  final settingsBox = Hive.box('settings');
+
+  MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,21 +40,21 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: MyThemes.lightTheme,
       darkTheme: MyThemes.darkTheme,
-      home: FutureBuilder<bool>(
-          future: isLoggedIn(),
-          builder: (context, defLoginBool) {
-            if (defLoginBool.hasData) {
-              if (_stayloggedin&&defLoginBool.data!){
-                return const MyHomePage();
-              }
-              else {
-                return const Login();
-              }
-            }
-            return const Login();
-          }
-      ),
+      home: startup(context)
     );
+  }
+
+  startup(BuildContext context) {
+    if (settingsBox.get("isLoggedIn", defaultValue: false)) {
+      if (settingsBox.get("stayloggedin", defaultValue: true)
+          &&settingsBox.get("isLoggedIn", defaultValue: false)){
+        return const MyHomePage();
+      }
+      else {
+        return const Login();
+      }
+    }
+    return const Login();
   }
 
 }
@@ -69,10 +68,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage>  {
-  final GetWebsites _getWebsites = GetWebsites();
+  //inal GetWebsites _getWebsites = GetWebsites();
+
+  late Future<List<dom.Document>> URLlist;
+  late List<List<Change>> DocList;
 
   @override
   void initState() {
+    URLlist = getURLs().getUrls();
+    DocList = SiteParser().getData(URLlist) as List<List<Change>>; //List<Change>
     refresh();
     super.initState();
   }
@@ -122,7 +126,7 @@ class MyHomePageState extends State<MyHomePage>  {
 
           ]
       ),
-      body: getSites(),
+      body: rowOrTabbedLayout(DocList),
       /*
       drawer: Drawer(
         child: drawerElements(),
@@ -133,6 +137,7 @@ class MyHomePageState extends State<MyHomePage>  {
 
 
   //Get sites => Document, store them in a Document list
+  /*
   Widget getSites() {
     return FutureBuilder<List<html.Document>>(
       //gets Dates of each date in other class and puts it in an List -> snapshot
@@ -160,22 +165,17 @@ class MyHomePageState extends State<MyHomePage>  {
               );
             }
             //create tabs
-            return buildrefresh(snapshot);
+            return rowOrTabbedLayout(snapshot);
         }
       },
     );
   }
-  Widget buildrefresh(AsyncSnapshot<List<html.Document>> snapshot) {
-    return RefreshIndicator(
-      onRefresh: () {
-        return refresh();
-      },
-      child: rowOrTabbedLayout(snapshot),
-    );
-  }
+  
+   */
 
-  Widget rowOrTabbedLayout(AsyncSnapshot<List<html.Document>> snapshot) {
-    if(Settings.getValue<bool>("keyrowortabbed", true)){
+  Widget rowOrTabbedLayout(List<List<Change>> snapshot) {
+    final settingsBox = Hive.box('settings');
+    if(settingsBox.get("rowOrTabbed", defaultValue: false)){
       return TabbedLayout().createTabbedLayout(snapshot, context);
     }else{
       return RowLayout().createRowLayout(snapshot, context);
@@ -183,7 +183,9 @@ class MyHomePageState extends State<MyHomePage>  {
   }
 
   Future<void> refresh() async {
-    setState((){});
+    setState((){
+
+    });
     //print("Do something!!");
   }
 /*

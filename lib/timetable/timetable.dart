@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khsplan/main.dart';
-import 'package:khsplan/scraper/settings.dart';
+import 'package:khsplan/settings/oldsettings.dart';
 
 class Timetable extends StatefulWidget{
   const Timetable({Key? key}) : super(key: key);
@@ -19,7 +19,7 @@ class _TimeTableState extends State<Timetable> {
             actions: <Widget> [
               IconButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const MySettings()),
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const MyOldSettings()),
                   );
                 },
                 icon: const Icon(Icons.settings),
@@ -65,7 +65,7 @@ class _TimeTableState extends State<Timetable> {
       ListTile(
         title: const Text("Einstellungen"),
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const MySettings()),
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const MyOldSettings()),
           );
         },
       ),

@@ -5,26 +5,30 @@ import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 
 import '../main.dart';
 
-class MySettings extends StatefulWidget{
-  static const keydarkmode = "keydarkmode";
-  static const keyrowortabbed = "keyrowortabbed";
-  static const keysortfor = "keysortfor";
-  static const keysorttoggle = "keysorttoggle";
-  static const keyfiltertoggle = "keyfiltertoggle";
-  static const keyfilterklasse = "keyfilterklasse";
-  static const keyfilterteachertoggle = "keyfilterteachertoggle";
-  static const keyfilterteacher = "keyfilterteacher";
-  static const keystayloggedin = "keystayloggedin";
 
 
-  const MySettings({Key? key}) : super(key: key);
+
+class MyOldSettings extends StatefulWidget{
+
+  //static const keydarkmode = "keydarkmode";
+  static const rowOrTabbed = "rowOrTabbed";
+  static const sortfor = "sortfor";
+  static const sorttoggle = "sorttoggle";
+  static const togglefilter = "togglefilter";
+  static const classFilter = "classFilter";
+  static const toggleMentorFilter = "toggleMentorFilter";
+  static const mentorFilter = "mentorFilter";
+  static const stayloggedin = "stayloggedin";
+
+
+  const MyOldSettings({Key? key}) : super(key: key);
 
   @override
-  _MySettingsState createState() => _MySettingsState();
+  _MyOldSettingsState createState() => _MyOldSettingsState();
 
 }
 
-class _MySettingsState extends State<MySettings>{
+class _MyOldSettingsState extends State<MyOldSettings>{
 
   @override
   Widget build(BuildContext context) {
@@ -51,14 +55,14 @@ class _MySettingsState extends State<MySettings>{
         title: "Ändere aussehen",
         children: [
           _rowortabbed(),
-          _darkmodesettings()
+          //_darkmodesettings()
         ]);
   }
 
   Widget _rowortabbed() {
     return DropDownSettingsTile(
         title: "Wähle darstellungs Modus aus",
-        settingKey: "keyrowortabbed",
+        settingKey: "rowOrTabbed",
         selected: true,
         values: const <bool, String>{
           true: "Tabs",
@@ -67,6 +71,7 @@ class _MySettingsState extends State<MySettings>{
 
   }
 
+  /*
   Widget _darkmodesettings() {
     return SwitchSettingsTile(
       title: "Dunkler Modus",
@@ -80,6 +85,7 @@ class _MySettingsState extends State<MySettings>{
       //defaultValue: getThemeMode(),
     );
   }
+   */
 
 
 
@@ -89,11 +95,11 @@ class _MySettingsState extends State<MySettings>{
       children: [
         SwitchSettingsTile(
           title: "Sortieren Aktivieren",
-          settingKey: "keysorttoggle",
+          settingKey: "sorttoggle",
           childrenIfEnabled: [
             DropDownSettingsTile(
                 title: "Sortiere Nach",
-                settingKey: "keysortfor",
+                settingKey: "sortfor",
                 selected: 1,
                 values: const <int, String>{
                   1: "Stunde",
@@ -113,7 +119,7 @@ class _MySettingsState extends State<MySettings>{
       subtitle: 'Aktiviert/Deaktiviert Filtern.'
           '\nDie Klasse(n) einfach eingeben.'
           '\nBei mehreren mit einem freizeichen (" ") trennen',
-      settingKey: "keyfiltertoggle",
+      settingKey: "togglefilter",
       childrenIfEnabled: [
         _filterklasse()
       ],
@@ -123,7 +129,7 @@ class _MySettingsState extends State<MySettings>{
   Widget _filterklasse(){
     return TextInputSettingsTile(
         title: "Klassen Filter",
-        settingKey: "keyfilterklasse");
+        settingKey: "classFilter");
   }
   Widget _filterteachertoggle() {
     return SwitchSettingsTile(
@@ -131,7 +137,7 @@ class _MySettingsState extends State<MySettings>{
       subtitle: 'Aktiviert/Deaktiviert Filtern.'
           '\nBitte den kürzel des Lehrer oder der Lehrerin ein:'
           '\nEntweder: "NAM" oder "NAM XYZ" ohne Klammern.',
-      settingKey: "keyfilterteachertoggle",
+      settingKey: "toggleMentorFilter",
       childrenIfEnabled: [
         _filterteacher()
       ],
@@ -141,7 +147,7 @@ class _MySettingsState extends State<MySettings>{
   Widget _filterteacher(){
     return TextInputSettingsTile(
         title: "Lehrer Filter",
-        settingKey: "keyfilterteacher");
+        settingKey: "mentorFilter");
   }
 
   Widget _stayloggedin(){
@@ -150,7 +156,7 @@ class _MySettingsState extends State<MySettings>{
         defaultValue: true,
         enabled: true,
         subtitle: "Nach beenden der App Passwort nicht wieder eingeben",
-        settingKey: "keystayloggedin");
+        settingKey: "stayloggedin");
   }
 
   getThemeMode() {

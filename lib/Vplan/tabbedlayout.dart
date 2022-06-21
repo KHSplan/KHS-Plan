@@ -6,9 +6,8 @@ import 'package:khsplan/themes.dart';
 
 
 class TabbedLayout{
-  final SiteParser _getSiteData = SiteParser();
-  Widget createTabbedLayout(AsyncSnapshot<List<html.Document>> snapshot, BuildContext context){
-    return DefaultTabController(length: snapshot.data!.length,
+  Widget createTabbedLayout(List<List<Change>> snapshot, BuildContext context){
+    return DefaultTabController(length: snapshot.length,
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0,
@@ -23,35 +22,36 @@ class TabbedLayout{
         TabBarView(
           physics: const BouncingScrollPhysics(),
           children:
-          tabMaker(snapshot),
+          tabMaker(snapshot) ?? ifNull(),
         ),
       ),
     );
   }
 
-  List<Widget> tabBarMaker(AsyncSnapshot<List<html.Document>> snapshot) {
+  List<Widget> tabBarMaker(List<List<Change>> snapshot) {
     List<Tab> tabs = [];
-    for(int x = 0; x<snapshot.data!.length; x++) {
-      tabs.add(Tab(text: snapshot.data![x].querySelector('h1.list-table-caption')!.text
-          .toString()));
+    for(var x in snapshot) {
+      tabs.add(Tab(text: x[0].date));
     }
     return tabs;
   }
 
   //Create Tabs with contetnt for each site
-  List<Widget> tabMaker(AsyncSnapshot<List<html.Document>> snapshot) {
-    List<Widget> tabwidgets = [];
-    for(int x = 0; x<snapshot.data!.length; x++) {
-      tabwidgets.add(_buildDay(snapshot.data![x]));
+  List<Widget>? tabMaker(List<List<Change>> allsnapshot) {
+    for(var snapshot in allsnapshot) {
+      List<Widget> tabwidgets = [];
+      for(var snap in snapshot) {
+        tabwidgets.add(_buildDay(snap));
+      }
+      return tabwidgets;
     }
-    return tabwidgets;
   }
 
   //Widget to create Tabs of each day and their contents
 
   //Get Contents of a day
-  Widget _buildDay(html.Document site) {
-    List<Change> days = _getSiteData.getData(site);
+  Widget _buildDay(site) {
+    List<Change> days = site;
     return ListView.builder(
       scrollDirection: Axis.vertical,
       padding: const EdgeInsets.all(10),
@@ -62,6 +62,14 @@ class TabbedLayout{
         return MyThemes().buildCard(days[index], context);
       },
     );
+  }
+
+  List<Widget> ifNull() {
+    List<Widget> ifnull = [];
+    for(int n = 0; n<3; n++){
+      ifnull.add(const Text("nichts"));
+    }
+    return ifnull;
   }
 
 }

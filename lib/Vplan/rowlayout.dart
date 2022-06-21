@@ -6,16 +6,13 @@ import 'package:group_list_view/group_list_view.dart';
 import '../themes.dart';
 
 class RowLayout {
-  Widget createRowLayout(AsyncSnapshot<List<html.Document>> snapshot, BuildContext context){
+  Widget createRowLayout(List<List<Change>> snapshot, BuildContext context){
     return buildData(snapshot);
   }
 
-  Widget buildData(AsyncSnapshot<List<html.Document>> snapshot) {
-    List<List<Change>> days = [];
+  Widget buildData(List<List<Change>> snapshot) {
+    List<List<Change>> days = snapshot;
     //if(snapshot.data[0].body.text)
-    for(int x = 0; x<snapshot.data!.length; x++) {
-      days.add(SiteParser().getData(snapshot.data![x]));
-    }
     days.removeWhere((element) => element.isEmpty||element==[]);
 
     return GroupListView(
