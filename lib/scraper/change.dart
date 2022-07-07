@@ -4,9 +4,9 @@ class Change {
       lessonNumber,
       timeOfDay,
       subject,
+      room,
       change,
       mentor,
-      room,
       message,
       date;
 
@@ -16,9 +16,9 @@ class Change {
       this.lessonNumber,
       this.timeOfDay,
       this.subject,
+      this.room,
       this.change,
       this.mentor,
-      this.room,
       this.message,
       this.date);
 }

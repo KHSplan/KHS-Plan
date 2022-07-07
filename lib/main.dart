@@ -11,6 +11,7 @@ import 'package:khsplan/scraper/change.dart';
 import 'package:khsplan/scraper/getURLs.dart';
 import 'package:khsplan/scraper/getwebsites.dart';
 import 'package:khsplan/Vplan/tabbedlayout.dart';
+import 'package:khsplan/scraper/lib.dart';
 import 'package:khsplan/scraper/siteparser.dart';
 import 'package:khsplan/settings/oldsettings.dart';
 import 'package:khsplan/settings/settings.dart';
@@ -70,14 +71,10 @@ class MyHomePage extends StatefulWidget {
 class MyHomePageState extends State<MyHomePage>  {
   //inal GetWebsites _getWebsites = GetWebsites();
 
-  late Future<List<dom.Document>> URLlist;
-  late List<List<Change>> DocList;
 
   @override
   void initState() {
-    URLlist = getURLs().getUrls();
-    DocList = SiteParser().getData(URLlist) as List<List<Change>>; //List<Change>
-    refresh();
+    //List<Change>
     super.initState();
   }
 
@@ -87,13 +84,14 @@ class MyHomePageState extends State<MyHomePage>  {
       themeMode: ThemeMode.system,
       theme: MyThemes.lightTheme,
       darkTheme: MyThemes.darkTheme,
-      home: baseUI(),//getSites(),
+      home: getSites(),
     );
   }
 
 
 
-  Widget baseUI() {
+  Widget baseUI(AsyncSnapshot<List<List<Change>>> snapshot) {
+
     return Scaffold(
       appBar: AppBar(
           title: const Text("Vertretungsplan"),
@@ -120,13 +118,13 @@ class MyHomePageState extends State<MyHomePage>  {
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () {
-                initState();
+                refresh();
               },
             ),
 
           ]
       ),
-      body: rowOrTabbedLayout(DocList),
+      body: rowOrTabbedLayout(snapshot),
       /*
       drawer: Drawer(
         child: drawerElements(),
@@ -137,12 +135,11 @@ class MyHomePageState extends State<MyHomePage>  {
 
 
   //Get sites => Document, store them in a Document list
-  /*
   Widget getSites() {
-    return FutureBuilder<List<html.Document>>(
+    return FutureBuilder<List<List<Change>>>(
       //gets Dates of each date in other class and puts it in an List -> snapshot
-      future: _getWebsites.getWebsite(),
-      builder: (BuildContext context, AsyncSnapshot<List<html.Document>> snapshot) {
+      future: GetUrlsClass().getData(),
+      builder: (BuildContext context, AsyncSnapshot<List<List<Change>>> snapshot) {
         //Cases for Connections
         switch(snapshot.connectionState) {
           case ConnectionState.active:
@@ -165,15 +162,15 @@ class MyHomePageState extends State<MyHomePage>  {
               );
             }
             //create tabs
-            return rowOrTabbedLayout(snapshot);
+            return baseUI(snapshot);
         }
       },
     );
   }
-  
-   */
 
-  Widget rowOrTabbedLayout(List<List<Change>> snapshot) {
+
+  Widget rowOrTabbedLayout(AsyncSnapshot<List<List<Change>>> snapshot) {
+
     final settingsBox = Hive.box('settings');
     if(settingsBox.get("rowOrTabbed", defaultValue: false)){
       return TabbedLayout().createTabbedLayout(snapshot, context);

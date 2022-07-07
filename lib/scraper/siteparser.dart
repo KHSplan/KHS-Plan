@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 import 'package:khsplan/scraper/change.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -7,13 +8,16 @@ class SiteParser {
 
   final settingsBox = Hive.box('settings');
 
-  Future<List<List<Change>>> getData(Future<List<Document>> site) async {
-    List<Document> seite = site as List<Document>;
+  List<List<Change>> getData(List<Document> site) {
+    List<Document> seite = site;
     List<List<Change>> days = [];
     for (var docs in seite) {
       List<Change> changes = [];
       final String date =
       docs.querySelector('h1.list-table-caption')!.text.toString();
+      if (kDebugMode) {
+        print(date);
+      }
       //gets Table
       final table = docs.querySelector('table.list-table');
       //gets specifc data

@@ -6,7 +6,12 @@ import 'package:khsplan/themes.dart';
 
 
 class TabbedLayout{
-  Widget createTabbedLayout(List<List<Change>> snapshot, BuildContext context){
+  Widget createTabbedLayout(AsyncSnapshot<List<List<Change>>> snap, BuildContext context){
+    List<List<Change>> snapshot = [];
+    //if(snapshot.data[0].body.text)
+    for(int x = 0; x<snap.data!.length; x++) {
+      snapshot.add(snap.data![x]);
+    }
     return DefaultTabController(length: snapshot.length,
       child: Scaffold(
         appBar: AppBar(
@@ -22,7 +27,7 @@ class TabbedLayout{
         TabBarView(
           physics: const BouncingScrollPhysics(),
           children:
-          tabMaker(snapshot) ?? ifNull(),
+          tabMaker(snapshot),
         ),
       ),
     );
@@ -31,20 +36,20 @@ class TabbedLayout{
   List<Widget> tabBarMaker(List<List<Change>> snapshot) {
     List<Tab> tabs = [];
     for(var x in snapshot) {
-      tabs.add(Tab(text: x[0].date));
+      tabs.add(Tab(text: x[0].date.toString()));
     }
     return tabs;
   }
 
   //Create Tabs with contetnt for each site
-  List<Widget>? tabMaker(List<List<Change>> allsnapshot) {
+  List<Widget> tabMaker(List<List<Change>> allsnapshot) {
+    List<Widget> tabwidgets = [];
     for(var snapshot in allsnapshot) {
-      List<Widget> tabwidgets = [];
       for(var snap in snapshot) {
         tabwidgets.add(_buildDay(snap));
       }
-      return tabwidgets;
     }
+    return tabwidgets;
   }
 
   //Widget to create Tabs of each day and their contents
